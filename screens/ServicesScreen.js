@@ -1,100 +1,106 @@
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RIDE_TYPES } from '../data/drivers';
+import { CAR_ICONS } from '../data/carIcons';
+import { POPULAR_DESTINATIONS } from '../data/destinations';
 
-const GO_ANYWHERE_BIG = [
-  { id: 'course', label: 'Course', emoji: '🚗' },
-  { id: 'reserver', label: 'Réserver', emoji: '📅' },
-];
+const RIDE_TYPE_ITEMS = Object.entries(RIDE_TYPES).map(([type, meta]) => ({
+  id: type,
+  label: meta.label,
+  icon: CAR_ICONS[type],
+}));
 
-const GO_ANYWHERE_SMALL = [
-  { id: 'location', label: 'Location', emoji: '🔑', promo: true },
-  { id: 'seniors', label: 'Seniors', emoji: '🚶' },
-  { id: 'teens', label: 'Teens', emoji: '🎒' },
-];
+const RIDE_TYPES_BIG = RIDE_TYPE_ITEMS.slice(0, 2);
+const RIDE_TYPES_SMALL = RIDE_TYPE_ITEMS.slice(2);
 
-const DELIVER_BIG = [
-  { id: 'repas', label: 'Repas', emoji: '🥗' },
-  { id: 'courses', label: 'Courses', emoji: '🛒' },
-];
+const DESTINATIONS_BIG = POPULAR_DESTINATIONS.slice(0, 2).map((item) => ({
+  id: item.key,
+  label: item.name,
+  emoji: item.emoji,
+  color: item.color,
+  lat: item.lat,
+  lng: item.lng,
+}));
 
-const DELIVER_SMALL_ROW1 = [
-  { id: 'alcool', label: 'Alcool', emoji: '🍷' },
-  { id: 'electronique', label: 'Électronique', emoji: '🖱️' },
-  { id: 'sante', label: 'Santé', emoji: '💊' },
-  { id: 'epicerie', label: 'Épicerie', emoji: '🥖' },
-];
+const DESTINATIONS_SMALL = POPULAR_DESTINATIONS.slice(2).map((item) => ({
+  id: item.key,
+  label: item.name,
+  emoji: item.emoji,
+  color: item.color,
+  lat: item.lat,
+  lng: item.lng,
+}));
 
-const DELIVER_SMALL_ROW2 = [
-  { id: 'boutique', label: 'Boutique', emoji: '📚' },
-  { id: 'bebe', label: 'Bébé', emoji: '🍼' },
-  { id: 'animaux', label: 'Animaux', emoji: '🐾' },
-  { id: 'hygiene', label: 'Hygiène', emoji: '💄' },
-];
-
-function BigTile({ label, emoji, promo }) {
+function BigTile({ label, emoji, icon, color, onPress }) {
   return (
-    <TouchableOpacity style={styles.bigTile} activeOpacity={0.7}>
-      {promo ? (
-        <View style={styles.promoBadge}>
-          <Text style={styles.promoBadgeText}>Promo</Text>
-        </View>
-      ) : null}
-      <Text style={styles.bigEmoji}>{emoji}</Text>
+    <TouchableOpacity
+      style={[styles.bigTile, color && { backgroundColor: color }]}
+      activeOpacity={0.7}
+      onPress={onPress}
+    >
+      {icon ? (
+        <Image source={icon} style={styles.bigIcon} resizeMode="contain" />
+      ) : (
+        <Text style={styles.bigEmoji}>{emoji}</Text>
+      )}
       <Text style={styles.bigLabel}>{label}</Text>
     </TouchableOpacity>
   );
 }
 
-function SmallTile({ label, emoji, promo }) {
+function SmallTile({ label, emoji, icon, color, onPress }) {
   return (
-    <TouchableOpacity style={styles.smallTile} activeOpacity={0.7}>
-      {promo ? (
-        <View style={styles.promoBadge}>
-          <Text style={styles.promoBadgeText}>Promo</Text>
-        </View>
-      ) : null}
-      <Text style={styles.smallEmoji}>{emoji}</Text>
+    <TouchableOpacity
+      style={[styles.smallTile, color && { backgroundColor: color }]}
+      activeOpacity={0.7}
+      onPress={onPress}
+    >
+      {icon ? (
+        <Image source={icon} style={styles.smallIcon} resizeMode="contain" />
+      ) : (
+        <Text style={styles.smallEmoji}>{emoji}</Text>
+      )}
       <Text style={styles.smallLabel}>{label}</Text>
     </TouchableOpacity>
   );
 }
 
-export default function ServicesScreen() {
+export default function ServicesScreen({ onSelectDestination }) {
+  const goToDestination = (item) => {
+    if (!item.lat || !onSelectDestination) return;
+    onSelectDestination({ lat: item.lat, lng: item.lng, name: item.label, address: item.label });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <Text style={styles.pageTitle}>Services</Text>
 
-        <Text style={styles.sectionTitle}>Allez n'importe où</Text>
+        <Text style={styles.sectionTitle}>Nos types de course</Text>
 
         <View style={styles.row}>
-          {GO_ANYWHERE_BIG.map((item) => (
+          {RIDE_TYPES_BIG.map((item) => (
             <BigTile key={item.id} {...item} />
           ))}
         </View>
         <View style={styles.row}>
-          {GO_ANYWHERE_SMALL.map((item) => (
+          {RIDE_TYPES_SMALL.map((item) => (
             <SmallTile key={item.id} {...item} />
           ))}
         </View>
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionTitle}>Faites-vous livrer ce que vous voulez</Text>
+        <Text style={styles.sectionTitle}>Destinations populaires</Text>
 
         <View style={styles.row}>
-          {DELIVER_BIG.map((item) => (
-            <BigTile key={item.id} {...item} />
+          {DESTINATIONS_BIG.map((item) => (
+            <BigTile key={item.id} {...item} onPress={() => goToDestination(item)} />
           ))}
         </View>
         <View style={styles.row}>
-          {DELIVER_SMALL_ROW1.map((item) => (
-            <SmallTile key={item.id} {...item} />
-          ))}
-        </View>
-        <View style={styles.row}>
-          {DELIVER_SMALL_ROW2.map((item) => (
-            <SmallTile key={item.id} {...item} />
+          {DESTINATIONS_SMALL.map((item) => (
+            <SmallTile key={item.id} {...item} onPress={() => goToDestination(item)} />
           ))}
         </View>
       </ScrollView>
@@ -145,6 +151,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  bigIcon: {
+    width: 72,
+    height: 72,
+  },
   bigEmoji: {
     fontSize: 40,
   },
@@ -164,30 +174,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  smallIcon: {
+    width: 54,
+    height: 54,
+    marginTop: 8,
+  },
   smallEmoji: {
     fontSize: 34,
     marginTop: 8,
   },
-  // smallEmoji matches forYouEmoji size in HomeScreen for a consistent icon scale
   smallLabel: {
     fontSize: 13,
     fontWeight: '600',
     color: '#000',
     textAlign: 'center',
-  },
-  promoBadge: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
-    backgroundColor: '#e11900',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    zIndex: 1,
-  },
-  promoBadgeText: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '700',
   },
 });

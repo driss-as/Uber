@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = 'uber_recent_searches';
-const MAX_RECENTS = 2;
+const MAX_RECENTS = 3;
 
 export async function getRecentSearches() {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    // Ignore les entrées sauvegardées avant l'ajout des coordonnées (lat/lng manquants)
+    return parsed.filter((item) => typeof item.lat === 'number' && typeof item.lng === 'number');
   } catch (error) {
     return [];
   }
@@ -17,6 +19,8 @@ export async function addRecentSearch(destination) {
   const entry = {
     title: destination.name || destination.address || 'Destination',
     subtitle: destination.address || '',
+    lat: destination.lat,
+    lng: destination.lng,
   };
 
   try {

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
@@ -10,9 +9,7 @@ function formatPrice(value) {
   return `${value.toFixed(2).replace('.', ',')} €`;
 }
 
-export default function PaymentScreen({ ride, route, destination, onBack, onDone }) {
-  const [confirmed, setConfirmed] = useState(false);
-
+export default function PaymentScreen({ ride, route, destination, onBack, onConfirm }) {
   const routeCoordinates = route ?? [
     { latitude: CURRENT_LOCATION.lat, longitude: CURRENT_LOCATION.lng },
     { latitude: destination.lat, longitude: destination.lng },
@@ -116,26 +113,9 @@ export default function PaymentScreen({ ride, route, destination, onBack, onDone
       </ScrollView>
 
       <View style={styles.footer}>
-        {confirmed ? (
-          <View style={styles.confirmedButton}>
-            <Ionicons name="checkmark-circle" size={20} color="#fff" />
-            <Text style={styles.confirmButtonText}>Course confirmée</Text>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.confirmButton}
-            activeOpacity={0.85}
-            onPress={() => setConfirmed(true)}
-          >
-            <Text style={styles.confirmButtonText}>Confirmer {ride.name}</Text>
-          </TouchableOpacity>
-        )}
-
-        {confirmed ? (
-          <TouchableOpacity style={styles.doneButton} activeOpacity={0.7} onPress={onDone}>
-            <Text style={styles.doneButtonText}>Retour à l'accueil</Text>
-          </TouchableOpacity>
-        ) : null}
+        <TouchableOpacity style={styles.confirmButton} activeOpacity={0.85} onPress={onConfirm}>
+          <Text style={styles.confirmButtonText}>Confirmer {ride.name}</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -359,27 +339,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
   },
-  confirmedButton: {
-    flexDirection: 'row',
-    backgroundColor: '#1a9e4a',
-    borderRadius: 10,
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   confirmButtonText: {
     color: '#fff',
     fontSize: 15,
     fontWeight: '700',
-    marginLeft: 6,
-  },
-  doneButton: {
-    alignItems: 'center',
-    paddingVertical: 14,
-  },
-  doneButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6b6b6b',
   },
 });

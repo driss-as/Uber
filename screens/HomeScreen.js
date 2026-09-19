@@ -12,22 +12,27 @@ import { Ionicons } from '@expo/vector-icons';
 import { RIDE_TYPES } from '../data/drivers';
 import { CAR_ICONS } from '../data/carIcons';
 import { getRecentSearches } from '../data/recentSearches';
-
-const TABS = [
-  { key: 'uber', label: 'Uber', emoji: '🚗', active: true },
-  { key: 'eats', label: 'Uber Eats', emoji: '🥗', active: false },
-  { key: 'courses', label: 'Courses', emoji: '🏪', active: false },
-];
+import { POPULAR_DESTINATIONS } from '../data/destinations';
 
 // Affichées tant que l'utilisateur n'a pas encore recherché de destination
 const DEFAULT_RECENTS = [
   {
     title: 'Fourrière Municipale de Paris',
     subtitle: '39 Rue de Dantzig, Paris',
+    lat: 48.8367,
+    lng: 2.3013,
   },
   {
     title: 'Renault Paris Bastille',
     subtitle: '9 Bd Richard Lenoir, Paris',
+    lat: 48.8598,
+    lng: 2.3711,
+  },
+  {
+    title: 'Gare de Lyon',
+    subtitle: '20 Bd Diderot, Paris',
+    lat: 48.8443,
+    lng: 2.3744,
   },
 ];
 
@@ -36,58 +41,8 @@ const FOR_YOU = Object.entries(RIDE_TYPES).map(([type, meta]) => ({
   label: meta.label,
 }));
 
-const POPULAR_DESTINATIONS = [
-  {
-    key: 'cdg',
-    name: 'Aéroport Charles de Gaulle',
-    category: 'Vols internationaux',
-    time: '45 min',
-    color: '#dbe7f5',
-    emoji: '✈️',
-  },
-  {
-    key: 'orly',
-    name: "Aéroport d'Orly",
-    category: 'Vols nationaux',
-    time: '30 min',
-    color: '#fde8d7',
-    emoji: '🛫',
-  },
-  {
-    key: 'gare-du-nord',
-    name: 'Gare du Nord',
-    category: 'Eurostar, Thalys',
-    time: '15 min',
-    color: '#e2dbf5',
-    emoji: '🚄',
-  },
-  {
-    key: 'tour-eiffel',
-    name: 'Tour Eiffel',
-    category: 'Monument',
-    time: '20 min',
-    color: '#dff0e4',
-    emoji: '🗼',
-  },
-  {
-    key: 'disneyland',
-    name: 'Disneyland Paris',
-    category: 'Parc à thème',
-    time: '40 min',
-    color: '#fbe0ea',
-    emoji: '🎢',
-  },
-  {
-    key: 'la-defense',
-    name: 'La Défense',
-    category: "Quartier d'affaires",
-    time: '25 min',
-    color: '#e8e8e8',
-    emoji: '🏢',
-  },
-];
 
-export default function HomeScreen({ onPressSearch }) {
+export default function HomeScreen({ onPressSearch, onSelectRecent }) {
   const [recents, setRecents] = useState(DEFAULT_RECENTS);
 
   useEffect(() => {
@@ -98,18 +53,8 @@ export default function HomeScreen({ onPressSearch }) {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <View style={styles.tabRow}>
-        {TABS.map((tab) => (
-          <TouchableOpacity key={tab.key} style={styles.tabItem} activeOpacity={0.7}>
-            <View style={styles.tabLabelRow}>
-              <Text style={styles.tabEmoji}>{tab.emoji}</Text>
-              <Text style={[styles.tabLabel, tab.active && styles.tabLabelActive]}>
-                {tab.label}
-              </Text>
-            </View>
-            {tab.active ? <View style={styles.tabUnderline} /> : null}
-          </TouchableOpacity>
-        ))}
+      <View style={styles.headerRow}>
+        <Text style={styles.headerTitle}>Uber</Text>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -118,21 +63,31 @@ export default function HomeScreen({ onPressSearch }) {
             <Ionicons name="search" size={18} color="#000" />
             <Text style={styles.searchPlaceholder}>Où allez-vous ?</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.laterButton} activeOpacity={0.7}>
-            <Ionicons name="calendar-outline" size={16} color="#000" />
-            <Text style={styles.laterText}>Plus tard</Text>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.recentsCard}>
           {recents.map((item, index) => (
             <View key={item.title}>
-              <TouchableOpacity style={styles.recentRow} activeOpacity={0.7}>
+              <TouchableOpacity
+                style={styles.recentRow}
+                activeOpacity={0.7}
+                onPress={() =>
+                  onSelectRecent &&
+                  onSelectRecent({
+                    lat: item.lat,
+                    lng: item.lng,
+                    name: item.title,
+                    address: item.subtitle,
+                  })
+                }
+              >
                 <View style={styles.recentIcon}>
                   <Ionicons name="time-outline" size={18} color="#000" />
                 </View>
                 <View style={styles.recentInfo}>
-                  <Text style={styles.recentTitle}>{item.title}</Text>
+                  <Text style={styles.recentTitle} numberOfLines={1}>
+                    {item.title}
+                  </Text>
                   <Text style={styles.recentSubtitle} numberOfLines={1}>
                     {item.subtitle}
                   </Text>
@@ -179,7 +134,15 @@ export default function HomeScreen({ onPressSearch }) {
           contentContainerStyle={styles.eatsRow}
         >
           {POPULAR_DESTINATIONS.map((item) => (
-            <TouchableOpacity key={item.key} style={styles.eatsCard} activeOpacity={0.7}>
+            <TouchableOpacity
+              key={item.key}
+              style={styles.eatsCard}
+              activeOpacity={0.7}
+              onPress={() =>
+                onSelectRecent &&
+                onSelectRecent({ lat: item.lat, lng: item.lng, name: item.name, address: item.name })
+              }
+            >
               <View style={[styles.eatsImage, { backgroundColor: item.color }]}>
                 <Text style={styles.eatsEmoji}>{item.emoji}</Text>
               </View>
@@ -202,37 +165,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  tabRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerRow: {
     paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 8,
   },
-  tabItem: {
-    marginRight: 24,
-    paddingBottom: 10,
-  },
-  tabLabelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  tabEmoji: {
-    fontSize: 18,
-    marginRight: 6,
-  },
-  tabLabel: {
-    fontSize: 19,
-    fontWeight: '600',
-    color: '#9a9a9a',
-  },
-  tabLabelActive: {
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
     color: '#000',
-  },
-  tabUnderline: {
-    marginTop: 8,
-    height: 2,
-    width: '100%',
-    backgroundColor: '#000',
   },
   scrollContent: {
     paddingBottom: 24,
@@ -252,27 +193,12 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    marginRight: 10,
   },
   searchPlaceholder: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000',
     marginLeft: 10,
-  },
-  laterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 28,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-  },
-  laterText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 6,
   },
   recentsCard: {
     marginTop: 16,
