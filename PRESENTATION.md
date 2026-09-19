@@ -15,7 +15,7 @@
  \____\___/|_| \_| |_| |_____/_/\_\ |_| |_____|
 ```
 
-Ce projet a été réalisé dans le cadre de la **formation Studio IA du Pro, gratuite**. Il s'agit d'un exercice pédagogique visant à découvrir le développement d'une application mobile avec **Expo / React Native**, en s'appuyant sur l'assistance d'un agent IA (Claude Code) pour la génération et l'itération du code.
+Ce projet a été réalisé dans le cadre de la **formation Studio IA, gratuite**. Il s'agit d'un exercice pédagogique visant à découvrir le développement d'une application mobile avec **Expo / React Native**, en s'appuyant sur l'assistance d'un agent IA (Claude Code) pour la génération et l'itération du code.
 
 L'objectif n'est pas de produire un produit commercial, mais de manipuler concrètement :
 - la structure d'une application mobile multi-écrans,
@@ -88,10 +88,10 @@ Application de démonstration à but pédagogique :
 |_|   \___/|_| \_\_|  |_/_/   \_\_| |___\___/|_| \_|
 ```
 
-Ce projet illustre les compétences abordées dans la formation **Studio IA du Pro (offre gratuite)** : utiliser un agent IA comme copilote de développement pour concevoir, structurer et itérer rapidement sur une application mobile complète.
+Ce projet illustre les compétences abordées dans la formation **Studio IA (offre gratuite)** : utiliser un agent IA comme copilote de développement pour concevoir, structurer et itérer rapidement sur une application mobile complète.
 
 - 🎓 Formation gratuite : https://formation.drissas.com/formation-gratuite
-- 🚀 Studio IA du Pro : https://formation.drissas.com/studio-ia
+- 🚀 Studio IA : https://formation.drissas.com/studio-ia
 
 ```
  ____  _        _    _   _  __     _____ ____  _____ ___  

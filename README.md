@@ -7,13 +7,13 @@
  \____/|____/|______|_|  \_\  \_____|______\____/|_| \_|______|
 ```
 
-> Clone simplifié de l'application Uber, développé avec **Expo / React Native** dans le cadre de la **formation Studio IA du Pro (offre gratuite)**.
+> Clone simplifié de l'application Uber, développé avec **Expo / React Native** dans le cadre de la **formation Studio IA (offre gratuite)**.
 
 ![Expo](https://img.shields.io/badge/Expo-SDK%2057-000020?logo=expo&logoColor=white)
 ![React Native](https://img.shields.io/badge/React%20Native-0.86-61DAFB?logo=react&logoColor=black)
 
 🎓 Formation gratuite : https://formation.drissas.com/formation-gratuite
-🚀 Studio IA du Pro : https://formation.drissas.com/studio-ia
+🚀 Studio IA : https://formation.drissas.com/studio-ia
 
 ---
 
